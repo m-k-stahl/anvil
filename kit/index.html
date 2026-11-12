@@ -21,10 +21,12 @@
     -webkit-font-smoothing: antialiased;
   }
   main { max-width: 560px; margin: 0 auto; padding: 20px 16px 96px; }
+  a { color: inherit; }
 
   header { padding: 8px 0 20px; }
   .boxname { font-size: 28px; font-weight: 650; letter-spacing: -0.02em; margin: 0; }
   .boxmeta { color: var(--dim); font-size: 15px; margin: 4px 0 0; }
+  .boxmeta a { color: var(--dim); }
 
   .tally {
     position: sticky; top: 0; z-index: 2;
@@ -44,6 +46,9 @@
     border-bottom: 1px solid var(--line);
     cursor: pointer; user-select: none;
   }
+  li.d1 { padding-left: 44px; min-height: 54px; }
+  li.d2 { padding-left: 74px; min-height: 54px; }
+  li.d1 .label, li.d2 .label { font-size: 17px; }
   li:active { background: var(--panel); }
   .mark {
     flex: 0 0 auto; width: 30px; height: 30px; border-radius: 7px;
@@ -56,11 +61,19 @@
     transform: rotate(-45deg) scale(0.4); opacity: 0;
     transition: opacity .12s, transform .12s;
   }
-  .label { font-size: 18px; }
+  .label { font-size: 18px; flex: 1 1 auto; }
   li.on .mark { background: var(--go); border-color: var(--go); }
   li.on .mark::after { opacity: 1; transform: rotate(-45deg) scale(1); }
   li.on .label { color: var(--dim); text-decoration: line-through; text-decoration-color: var(--line); }
   li:focus-visible { outline: 2px solid var(--go); outline-offset: -2px; }
+
+  /* A line that is another box or tote: filled in from that box's own checks. */
+  li.ref .mark { border-radius: 50%; }
+  li.ref .label { font-weight: 600; }
+  li.ref.on .label { text-decoration: none; }
+  .stat { flex: 0 0 auto; color: var(--dim); font-size: 15px; }
+  .stat.left { color: var(--text); }
+  .go { color: var(--dim); font-size: 22px; line-height: 1; }
 
   .reset {
     position: fixed; left: 50%; transform: translateX(-50%);
@@ -68,14 +81,19 @@
     background: var(--panel); color: var(--text);
     border: 1px solid var(--line); border-radius: 999px;
     padding: 13px 28px; font-size: 16px; font-family: inherit;
+    white-space: nowrap;
   }
   .reset:active { background: var(--line); }
 
+  .pick h2 { color: var(--dim); font-size: 14px; font-weight: 600; text-transform: uppercase;
+             letter-spacing: .06em; margin: 26px 0 4px; }
   .pick a {
-    display: block; padding: 18px 4px; font-size: 19px;
+    display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+    padding: 16px 4px; font-size: 19px;
     color: var(--text); text-decoration: none;
     border-bottom: 1px solid var(--line);
   }
+  .pick a .stat.done { color: var(--go); }
   @media (prefers-reduced-motion: reduce) { .mark::after { transition: none; } }
 </style>
 </head>
@@ -85,177 +103,460 @@
 <script>
 // ---------------------------------------------------------------
 // ADD OR EDIT BOXES HERE. Nothing below this block needs changing.
+//
+// The key ("1", "t1", "oh") is what goes on the card: ?b=1, ?b=t1, ?b=oh
+//
+// Item lines:
+//   "Wireless mouse"       a thing to tick
+//   "- Spare battery"      indented under the line above
+//   "-- Laminated card"    indented twice
+//   "@1"                   box 1 sits inside this one. The line ticks itself
+//                          when box 1 is complete; tapping it opens box 1.
 // ---------------------------------------------------------------
 const BOXES = {
-  1: {
-    name: "Forge Kit",
-    sub: "Network and console",
+  oh: {
+    group: "Load-out",
+    name: "OH day load-out",
+    sub: "Everything that leaves for an OH class",
     items: [
-      "Ethernet cable bag with assorted ethernet cables",
-      "2 Ethernet to USB adapters",
-      "2 HDMI-Power Snakes",
-      "Wireless Keyboard",
-      "Wireless Mouse",
-      "Spare Battery box with batteries",
-      "2 spare HDMI cables",
-      "USB Cable, Macbook to Notepad 7/8",
-      "ESP 32 backup chip",
-      "2 USB C Power cables (backup)",
+      "@t1",
+      "@t2",
+      "@t3",
+      "@grey",
+      "@10",
+      "@9",
+      "@7",
+      "@8",
+      "Facilitator table",
+      "Wagon",
+      "- Tie straps",
+      "Cart",
+      "- Tie straps",
     ]
   },
-    2: {
-    name: "Mixer Kit",
+  qc: {
+    group: "Load-out",
+    name: "Quiz Code day load-out",
+    sub: "Everything that leaves for a Quiz Code day",
+    items: [
+      "@t1",
+      "@4",
+      "@5",
+      "@6",
+      "@7",
+      "@8",
+      "@11",
+    ]
+  },
+
+  t1: {
+    group: "Totes",
+    name: "Tote 1",
+    sub: "Yellow lid",
+    items: [
+      "Anvil Rack",
+      "Extension cords",
+      "@1",
+      "@2",
+    ]
+  },
+  t2: {
+    group: "Totes",
+    name: "Tote 2",
+    sub: "Yellow lid",
+    items: [
+      "Print Rack",
+      "InnoView INVPM406 display panels (2)",
+      "@3",
+      "@4",
+    ]
+  },
+  t3: {
+    group: "Totes",
+    name: "Tote 3",
+    sub: "Yellow lid · Clinical supplies for Andy",
+    items: [
+      "Atrium (2, one spare)",
+      "Bulb drain",
+      "Y tubing for atrium",
+      "Ambu bag",
+      "Ballard",
+      "Ventilator tubing",
+      "Urometer and tubing",
+      "Epicardial wire",
+      "Pacer connector wire",
+      "Sternal dressing",
+      "Chest tube dressing",
+      "Central line/Swan dressing",
+      "ET tube holder spare",
+      "Suction cassette and tubing",
+      "Arterial and Swan setup",
+      "Collection bags for IV fluids",
+      "- Collection bag for arterial line",
+      "- Collection bag for IV fluids (inside Andy)",
+      "Two blood bags and spare (double spiked)",
+      "One urine bag and spare (double spiked)",
+      "Fill funnels",
+      "Repair kit",
+      "150 ml graduated cylinder",
+      "IV labels (simulated drugs)",
+      "Blue chux",
+      "Flat sheets (3)",
+      "Towels (4)",
+      "Trash bags",
+      "Gloves",
+      "Bleeding rig clear flush bags",
+      "IV simulation drugs",
+      "- IV tubing for Shea/DV and FP",
+      "- Epi, Dobutamine, Precedex, etc.",
+    ]
+  },
+  grey: {
+    group: "Totes",
+    name: "Grey Tote",
+    sub: "Grey lid · Liquids",
+    items: [
+      "Gallon of blood (dark cherry Kool-Aid and preservative)",
+      "Gallon of urine (lemonade Kool-Aid and preservative)",
+    ]
+  },
+
+  1: {
+    name: "Box 1 · Forge Kit",
+    sub: "Network and console",
+    items: [
+      "Ethernet cable bag",
+      "- Assorted ethernet cables",
+      "- USB-C to Ethernet adapters (2)",
+      "HDMI snake (pair of HDMI and pair of USB-C for monitors)",
+      "Wireless keyboard",
+      "- Spare batteries",
+      "Wireless mouse",
+      "- Spare battery",
+      "Spare HDMI cables (2)",
+      "USB cable, MacBook to Notepad ch 7/8",
+      "TP-Link TL-WR3002X (uplink only, no backup role)",
+      "ESP32 backup for bleed rig",
+    ]
+  },
+  2: {
+    name: "Box 2 · Mixer Kit",
     sub: "Mixer and accessories",
     items: [
       "Mixer",
       "Mixer power supply",
-      "Audio snake (xlr to trs)",
-      "2 25 foot speaker cables",
-      "2 6 foot speaker cables",
-      "Prop Phone",
+      "Audio snake (4 XLR to TRS)",
+      "Speaker cables (two long and two short)",
+      "Prop phone",
       "USB button for alarm cancel",
-      "USB extension card",  
+      "- USB extension cord",
     ]
   },
   3: {
-    name: "SimPrint Kit",
-    sub: "Power supplies and cords",
+    name: "Box 3 · SimPrint Kit",
+    sub: "Tablet, cards and paper",
     items: [
       "Android tablet",
-      "NFC Cards",
-      "Patient NFC Chip",
-      "BG NFC Chip",
+      "NFC cards",
+      "Patient card",
+      "BG card",
       "Two rolls of paper",
-      "Test cards"    
     ]
   },
   4: {
-    name: "Power Kit",
-    sub: "Extension cords",
+    name: "Box 4 · Power Kit",
+    sub: "Power supplies and cords",
     items: [
-      "2 Speaker extension cords",
-      "1 Bleed rig extension cord",
-      "1 Print Rack extension cord"
-  ]
+      "Extension cords (4)",
+      "- Speakers (2)",
+      "- Bleed rig (1)",
+      "- Print rack (1)",
+      "Power strip (MacBooks, Anvil Rack, Mixer, iPads)",
+      "Heavy-duty power cord for power strip (orange)",
+      "Gaffer tape",
+      "Medtronic 5388 (demonstration only)",
+    ]
   },
   5: {
-    name: "QuizCode ONLY Power Kit",
-    sub: "Game power supplies",
+    name: "Box 5 · Quiz Code Power Kit",
+    sub: "Quiz Code days only, not OH",
     items: [
-      "4 Anker USB power supplies and cords",
+      "4 Anker USB power supplies and power cords",
       "12 USB-C cords",
       "4 extension cords",
-      "4 Lightning cords",
+      "8 Lightning cords",
     ]
   },
   6: {
-    name: "QuizCode ONLY CardShark Kit",
-    sub: "Game CardShark supplies",
+    name: "Box 6 · CardShark Kit",
+    sub: "Quiz Code days only, not OH",
     items: [
-      "4 CardShark modules",
+      "Four CardShark modules",
       "USB charger and 4 cords",
-      "NFC Game cards",
-      "Table Stands",
+      "RFID cards",
+      "Bag of chips",
+      "Instruction pack",
+      "Table stands",
     ]
   },
   7: {
-    name: "Speaker Kit",
-    sub: "Powered Speakers",
+    name: "Box 7 · Speaker Kit",
+    sub: "Powered speakers",
     items: [
-      "2 powered speakers",
+      "Pair of powered speakers",
+      "Power cords",
     ]
   },
   8: {
-    name: "Work Bag",
-    sub: "Electronics (Charge the night before)",
+    name: "Box 8 · Work Bag",
+    sub: "Charge the night before",
     items: [
-      "MacBook Pro M4 16",
-      "MacBook Pro charger",
-      "IPad Pro 10 (SimBleed)",
-      "IPad Pro charger and USB-C cable",
-      "IPad Pro 12.9",
-      "IPad Pro charger and USB-C cable",
-      "IPad Mini (Pacer)",
-      "IPad Mini charger and lightning cable",
-      "MacBook Pro M1 13 (Sound Control)",
-      "MacBook Pro charger and cable",
-      "Stream Deck, cable and stand",      "Anker Power IQ 3 bank",
-      "Anker Power IQ 3 charger and cable",
+      "MacBook Pro M4 16\"",
+      "- Charger and cable",
+      "- Links preset in Bookmark Ninja",
+      "iPad Pro 10 (SimBleed)",
+      "- Charger and USB-C cable",
+      "iPad Pro 12.9 (backup)",
+      "- Charger and USB-C cable",
+      "iPad mini (Pacer)",
+      "- Charger and Lightning cable",
+      "MacBook Pro M1 13\" (Sound Control) with charger",
+      "Stream Deck",
+      "- Cable",
+      "- Stand",
+      "Anker PowerIQ 3 power bank (Pacer iPad)",
+      "- Charger and cable",
     ]
   },
   9: {
-    name: "Paper Red Box",
-    sub: "Paper supplies",
+    name: "Box 9 · Paper Red Box",
+    sub: "Blue top file box",
     items: [
-      "Instructor Binder",
-      "Sign In Sheets",
-      "QR Code sheet for evaluation", 
-      "Debrief forms", 
-      "Confederate Scripts", 
-      "Blank CV OR Report sheets", 
-      "Laminated Patient Card",
-      "Laminated Orders", 
-      "Laminated OH code algorithm",
-      "Sim Day Timing Sheet",
-      "Back Up Run Sheets"
+      "Paperwork folder",
+      "- Instructor binder",
+      "-- Facilitator run sheet book",
+      "-- Laminated address card",
+      "-- Passwords in LastPass",
+      "- Sign-in sheets",
+      "- QR code sheet for evaluation",
+      "- Debrief forms",
+      "- Confederate scripts",
+      "- Blank CV OR report sheets",
+      "- Laminated patient sheet",
+      "- Laminated orders",
+      "- Laminated copy of OH code algorithm",
+      "- Sim day timing sheet",
+      "Backup run sheets",
+      "- Laminated monitor screen grabs for each beat",
+      "- Laminated backup labs and CXR results",
+      "- Laminated Swan screen grabs",
     ]
-  }
+  },
+  10: {
+    name: "Box 10 · Andy Case",
+    sub: "Mannequin",
+    items: [
+      "Andy with legs, central line, ET tube and PA catheter",
+      "Slippers",
+      "Gown",
+      "Pants",
+      "SCDs",
+      "Telemetry leads",
+      "Bleed rig in chest cavity",
+      "Mini power strip for bleed rig",
+    ]
+  },
+  11: {
+    name: "Box 11 · Black Paper Box",
+    sub: "Quiz Code days only, not OH",
+    items: [
+      "Student booklets",
+      "Sign-in sheet",
+      "Instructor booklets",
+    ]
+  },
 };
 // ---------------------------------------------------------------
 
+// Ticks are saved on this phone, per box, and expire 48 hours after the last
+// tap on that box. "Clear every box" on a load-out list wipes them all at
+// once, for packing up at the end of class.
+const PREFIX = "anvil-kit-box-";
+const EXPIRE_MS = 48 * 60 * 60 * 1000;
+const GROUPS = ["Load-out", "Totes", "Boxes"];
+
 const app = document.getElementById("app");
 const id = new URLSearchParams(location.search).get("b");
-const box = BOXES[id];
+const mem = {};   // used only if the browser refuses storage (private mode)
 
-if (!box) {
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+// Each item becomes {key, label, depth} or {ref, depth}. Ticks are stored by
+// the item's text (numbered if the same text repeats), so reordering the list
+// never moves a tick onto the wrong item.
+function parse(boxId) {
+  const seen = {};
+  return BOXES[boxId].items.map(raw => {
+    const depth = (raw.match(/^-+/) || [""])[0].length;
+    const text = raw.replace(/^-+\s*/, "");
+    if (text.startsWith("@")) return { ref: text.slice(1), depth: depth };
+    seen[text] = (seen[text] || 0) + 1;
+    return { key: text + "#" + seen[text], label: text, depth: depth };
+  });
+}
+
+function readTicks(boxId) {
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(PREFIX + boxId)); }
+  catch (e) { saved = mem[boxId] || null; }
+  if (!saved || Date.now() - saved.t > EXPIRE_MS) return [];
+  return saved.on || [];
+}
+
+function writeTicks(boxId, on) {
+  const val = { t: Date.now(), on: on };
+  mem[boxId] = on.length ? val : null;
+  try {
+    if (on.length) localStorage.setItem(PREFIX + boxId, JSON.stringify(val));
+    else localStorage.removeItem(PREFIX + boxId);
+  } catch (e) {}
+}
+
+function clearAll() {
+  Object.keys(BOXES).forEach(k => writeTicks(k, []));
+}
+
+// Counts every tickable thing inside a box, following boxes inside boxes.
+function count(boxId, path) {
+  path = path || [];
+  const r = { total: 0, left: 0, touched: false };
+  if (!BOXES[boxId] || path.includes(boxId)) return r;
+  const on = readTicks(boxId);
+  if (on.length) r.touched = true;
+  parse(boxId).forEach(it => {
+    if (it.ref) {
+      const c = count(it.ref, path.concat(boxId));
+      r.total += c.total; r.left += c.left; r.touched = r.touched || c.touched;
+    } else {
+      r.total++;
+      if (!on.includes(it.key)) r.left++;
+    }
+  });
+  return r;
+}
+
+function statusText(c) {
+  if (c.total && c.left === 0) return "complete";
+  if (!c.touched) return "not checked";
+  return c.left + " left";
+}
+
+// The tote (not the load-out list) a box is packed in, if any.
+function packedIn(boxId) {
+  return Object.keys(BOXES).find(k =>
+    BOXES[k].group !== "Load-out" && parse(k).some(it => it.ref === boxId));
+}
+
+function renderPicker() {
   app.innerHTML =
     '<header><h1 class="boxname">Which box?</h1>' +
-    '<p class="boxmeta">No box number in the link. Pick one.</p></header>' +
+    '<p class="boxmeta">No box in the link. Pick one.</p></header>' +
     '<div class="pick">' +
-    Object.keys(BOXES).map(k =>
-      '<a href="?b=' + k + '">' + BOXES[k].name + '</a>'
+    GROUPS.map(g =>
+      '<h2>' + g + '</h2>' +
+      Object.keys(BOXES).filter(k => (BOXES[k].group || "Boxes") === g).map(k => {
+        const s = statusText(count(k));
+        return '<a href="?b=' + encodeURIComponent(k) + '"><span>' + esc(BOXES[k].name) + '</span>' +
+          '<span class="stat' + (s === "complete" ? " done" : "") + '">' + s + '</span></a>';
+      }).join("")
     ).join("") +
     '</div>';
-} else {
+}
+
+function renderBox() {
+  const box = BOXES[id];
+  const items = parse(id);
+  const on = readTicks(id);
+  const isLoadout = box.group === "Load-out";
+  const parent = packedIn(id);
+  const c = count(id);
+
+  const meta = [];
+  if (box.sub) meta.push(esc(box.sub));
+  if (parent) meta.push('Packed in <a href="?b=' + encodeURIComponent(parent) + '">' + esc(BOXES[parent].name) + '</a>');
+
   app.innerHTML =
-    '<header><h1 class="boxname">' + box.name + '</h1>' +
-    (box.sub ? '<p class="boxmeta">' + box.sub + '</p>' : '') + '</header>' +
-    '<div class="tally" id="tally"></div>' +
+    '<header><h1 class="boxname">' + esc(box.name) + '</h1>' +
+    (meta.length ? '<p class="boxmeta">' + meta.join(" · ") + '</p>' : '') + '</header>' +
+    '<div class="tally' + (c.left === 0 ? " done" : "") + '">' +
+    (c.left === 0
+      ? "<b>Complete</b><span>" + c.total + " of " + c.total + "</span>"
+      : "<b>" + c.left + "</b><span>still to find</span>") +
+    '</div>' +
     '<ul id="list">' +
-    box.items.map((t, i) =>
-      '<li tabindex="0" data-i="' + i + '"><span class="mark"></span>' +
-      '<span class="label">' + t + '</span></li>'
-    ).join("") +
+    items.map((it, i) => {
+      const d = it.depth ? " d" + Math.min(it.depth, 2) : "";
+      if (it.ref) {
+        const child = BOXES[it.ref];
+        if (!child) return '<li class="ref' + d + '"><span class="mark"></span><span class="label">Unknown box: ' + esc(it.ref) + '</span></li>';
+        const s = statusText(count(it.ref));
+        return '<li tabindex="0" class="ref' + d + (s === "complete" ? " on" : "") + '" data-ref="' + esc(it.ref) + '">' +
+          '<span class="mark"></span><span class="label">' + esc(child.name) + '</span>' +
+          '<span class="stat' + (s.endsWith("left") ? " left" : "") + '">' + s + '</span><span class="go">›</span></li>';
+      }
+      return '<li tabindex="0" class="' + d.trim() + (on.includes(it.key) ? " on" : "") + '" data-i="' + i + '">' +
+        '<span class="mark"></span><span class="label">' + esc(it.label) + '</span></li>';
+    }).join("") +
     '</ul>' +
-    '<button class="reset" id="reset">Start over</button>';
+    (isLoadout
+      ? '<button class="reset" id="reset">Clear every box</button>'
+      : '<button class="reset" id="reset">Start over</button>');
 
   const list = document.getElementById("list");
-  const tally = document.getElementById("tally");
 
-  function draw() {
-    const left = box.items.length - list.querySelectorAll("li.on").length;
-    tally.className = "tally" + (left === 0 ? " done" : "");
-    tally.innerHTML = left === 0
-      ? "<b>Complete</b><span>" + box.items.length + " of " + box.items.length + "</span>"
-      : "<b>" + left + "</b><span>still to find</span>";
+  function act(li, fromKeyboard) {
+    if (!li) return;
+    if (li.dataset.ref) { location.href = "?b=" + encodeURIComponent(li.dataset.ref); return; }
+    if (li.dataset.i === undefined) return;
+    const i = li.dataset.i;
+    const key = items[i].key;
+    const now = readTicks(id);
+    writeTicks(id, now.includes(key) ? now.filter(k => k !== key) : now.concat(key));
+    render();
+    if (fromKeyboard) {
+      const again = document.querySelector('li[data-i="' + i + '"]');
+      if (again) again.focus();
+    }
   }
 
-  function toggle(li) { li.classList.toggle("on"); draw(); }
-
-  list.addEventListener("click", e => {
-    const li = e.target.closest("li");
-    if (li) toggle(li);
-  });
+  list.addEventListener("click", e => act(e.target.closest("li"), false));
   list.addEventListener("keydown", e => {
-    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(e.target); }
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); act(e.target.closest("li"), true); }
   });
   document.getElementById("reset").addEventListener("click", () => {
-    list.querySelectorAll("li.on").forEach(li => li.classList.remove("on"));
-    draw();
+    if (isLoadout) {
+      if (!confirm("Clear the ticks on every box and tote? Do this before packing up at the end of class.")) return;
+      clearAll();
+    } else {
+      writeTicks(id, []);
+    }
+    render();
   });
-
-  draw();
 }
+
+function render() {
+  if (BOXES[id]) renderBox(); else renderPicker();
+}
+
+// Redraw when coming back to this page: from another box, from another tab,
+// or after ticks change in another tab. Keeps tote and load-out lines current.
+window.addEventListener("pageshow", render);
+window.addEventListener("storage", render);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) render(); });
+
+render();
 </script>
 </body>
 </html>
