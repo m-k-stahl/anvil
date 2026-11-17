@@ -33,10 +33,13 @@ off the URL, `https://m-k-stahl.github.io/anvil/kit/?b=` plus the key:
 | OH day load-out | `oh` | `.../anvil/kit/?b=oh` |
 | Quiz Code day load-out | `qc` | `.../anvil/kit/?b=qc` |
 | Tote 1 (Anvil Rack, Boxes 1 and 2) | `t1` | `.../anvil/kit/?b=t1` |
-| Tote 2 (Print Rack, panels, Boxes 3 and 4) | `t2` | `.../anvil/kit/?b=t2` |
-| Tote 3 (clinical supplies) | `t3` | `.../anvil/kit/?b=t3` |
-| Grey Tote (liquids) | `grey` | `.../anvil/kit/?b=grey` |
-| Box 1 to Box 11 | `1` to `11` | `.../anvil/kit/?b=1` and so on |
+| Tote 2 (Print Rack, panels, Boxes 3 and 4 on OH days) | `t2` | `.../anvil/kit/?b=t2` |
+| Tote 3 (clinical supplies, Boxes 11, 12 and 13) | `t3` | `.../anvil/kit/?b=t3` |
+| Tote 4 (wet side, the grey tote of liquids inside) | `t4` | `.../anvil/kit/?b=t4` |
+| Box 1 to Box 13 | `1` to `13` | `.../anvil/kit/?b=1` and so on |
+
+`?b=grey` still opens Tote 4, for a card written before the grey tote moved
+inside it.
 
 The page with no key (`.../anvil/kit/`) lists everything, grouped, with how far
 each one has got.
@@ -52,7 +55,8 @@ Item lines:
 - `"@1"` means Box 1 is packed inside this one. That line ticks itself when Box 1
   is complete, and tapping it opens Box 1. Box 1's own page then says which tote
   it is packed in. This is how totes hold boxes, and how a load-out list holds
-  totes.
+  totes. A box that is in a tote on one load-out and loose on another says so
+  for each: "OH day: in Tote 2 · Quiz Code day: loose".
 
 Two conventions worth keeping:
 
@@ -67,11 +71,15 @@ box. That is long enough to pack the night before, run class and pack up.
 class ends, before packing up. "Start over" on any other page clears just that
 one. The ticks live only on the phone that made them; a second phone sees its own.
 
-## Writing the tags
+## Writing the cards
 
-NTAG213 stickers, written with the NFC Tools app as a URL record. Both iPhone and
-Android open the page straight from the lock screen. Cover each sticker with clear
-tape, since the boxes get dragged and stacked.
+NFC cards, written with the NFC Tools app as a URL record. Both iPhone and Android
+open the page straight from the lock screen.
+
+Each card is taped with Scotch Heavy Duty packing tape to the inside top edge of
+its box or tote, and reads through the plastic. A laminated card on the outside
+gives the box's number and name and shows where the NFC card is. No stickers go on
+the boxes.
 
 ## Editing
 
