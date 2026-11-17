@@ -126,7 +126,7 @@ const BOXES = {
       "@t1",
       "@t2",
       "@t3",
-      "@grey",
+      "@t4",
       "@10",
       "@9",
       "@7",
@@ -180,48 +180,44 @@ const BOXES = {
     name: "Tote 3",
     sub: "Yellow lid · Clinical supplies for Andy",
     items: [
-      "Atrium (2, one spare)",
       "Bulb drain",
-      "Y tubing for atrium",
+      "Y tubing for Atrium",
       "Ambu bag",
       "Ballard",
       "Ventilator tubing",
       "Urometer and tubing",
-      "Epicardial wire",
       "Pacer connector wire",
       "Sternal dressing",
       "Chest tube dressing",
       "Central line/Swan dressing",
-      "ET tube holder spare",
+      "ET tube holder, spare",
       "Suction cassette and tubing",
-      "Arterial and Swan setup",
-      "Collection bags for IV fluids",
-      "- Collection bag for arterial line",
-      "- Collection bag for IV fluids (inside Andy)",
-      "Two blood bags and spare (double spiked)",
-      "One urine bag and spare (double spiked)",
-      "Fill funnels",
       "Repair kit",
-      "150 ml graduated cylinder",
       "IV labels (simulated drugs)",
-      "Blue chux",
       "Flat sheets (3)",
       "Towels (4)",
       "Trash bags",
       "Gloves",
-      "Bleeding rig clear flush bags",
-      "IV simulation drugs",
-      "- IV tubing for Shea/DV and FP",
-      "- Epi, Dobutamine, Precedex, etc.",
+      "@12",
+      "@13",
     ]
   },
-  grey: {
+  t4: {
     group: "Totes",
-    name: "Grey Tote",
-    sub: "Grey lid · Liquids",
+    name: "Tote 4",
+    sub: "Yellow lid · Wet side · HDX 27 qt",
     items: [
-      "Gallon of blood (dark cherry Kool-Aid and preservative)",
-      "Gallon of urine (lemonade Kool-Aid and preservative)",
+      "Atrium (2)",
+      "Chux (2 packages)",
+      "Funnels (2)",
+      "150 mL graduated cylinder",
+      "Grey tote (liquids)",
+      "- Gallon of blood",
+      "- Gallon of urine",
+      "- Blood, 1 liter bags (2)",
+      "- Urine, 1 liter bags (2)",
+      "- Distilled water, 2 liter bags (2), bleed rig flush",
+      "- Empty 1 liter bags with luer (2), arterial and Swan flush drains",
     ]
   },
 
@@ -379,6 +375,34 @@ const BOXES = {
       "Instructor booklets",
     ]
   },
+  12: {
+    name: "Box 12 · Swan Setup Box",
+    items: [
+      "Saline, 1 liter",
+      "Arterial and Swan pressure tubing",
+      "Transducer holder",
+    ]
+  },
+  13: {
+    name: "Box 13 · Simulated Drug Box",
+    items: [
+      "Dexmedetomidine, Shea tubing",
+      "Nicardipine, Shea tubing",
+      "Epinephrine, Shea tubing",
+      "Dopamine, Shea tubing",
+      "Insulin, Shea tubing",
+      "Norepinephrine, Shea tubing",
+      "Dobutamine, Shea tubing",
+      "Saline 1 liter, continuous IV (simulated)",
+      "Extra IV tubing for Four Peaks",
+    ]
+  },
+};
+
+// Old card keys that now open a different list. The address bar is rewritten
+// to the new key, so a card written before the change still lands right.
+const ALIASES = {
+  grey: "t4",   // the Grey Tote now rides inside Tote 4
 };
 // ---------------------------------------------------------------
 
@@ -390,7 +414,11 @@ const EXPIRE_MS = 48 * 60 * 60 * 1000;
 const GROUPS = ["Load-out", "Totes", "Boxes"];
 
 const app = document.getElementById("app");
-const id = new URLSearchParams(location.search).get("b");
+let id = new URLSearchParams(location.search).get("b");
+if (ALIASES[id]) {
+  id = ALIASES[id];
+  try { history.replaceState(null, "", "?b=" + encodeURIComponent(id)); } catch (e) {}
+}
 const mem = {};   // used only if the browser refuses storage (private mode)
 
 function esc(s) {
