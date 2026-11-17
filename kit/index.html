@@ -127,10 +127,10 @@ const BOXES = {
       "@t2",
       "@t3",
       "@t4",
-      "@10",
       "@9",
-      "@7",
       "@8",
+      "@6",
+      "@7",
       "Facilitator table",
       "Wagon",
       "- Tie straps",
@@ -141,15 +141,15 @@ const BOXES = {
   qc: {
     group: "Load-out",
     name: "Quiz Code day load-out",
-    sub: "Everything that leaves for a Quiz Code day",
+    sub: "Quiz Code, ECCO and other QuizCode classes",
     items: [
       "@t1",
+      "@3",
       "@4",
       "@5",
       "@6",
       "@7",
-      "@8",
-      "@11",
+      "@10",
     ]
   },
 
@@ -159,7 +159,8 @@ const BOXES = {
     sub: "Yellow lid",
     items: [
       "Anvil Rack",
-      "Extension cords",
+      "Orange extension cord (heavy duty, for the power strip)",
+      "Belkin power strip",
       "@1",
       "@2",
     ]
@@ -171,6 +172,7 @@ const BOXES = {
     items: [
       "Print Rack",
       "InnoView INVPM406 display panels (2)",
+      "Bag for name badges",
       "@3",
       "@4",
     ]
@@ -198,6 +200,10 @@ const BOXES = {
       "Towels (4)",
       "Trash bags",
       "Gloves",
+      "Potassium sorbate, bag",
+      "Sodium benzoate, bag",
+      "Kool-Aid, spare packets",
+      "@11",
       "@12",
       "@13",
     ]
@@ -237,6 +243,7 @@ const BOXES = {
       "USB cable, MacBook to Notepad ch 7/8",
       "TP-Link TL-WR3002X (uplink only, no backup role)",
       "ESP32 backup for bleed rig",
+      "Gaffer tape",
     ]
   },
   2: {
@@ -247,48 +254,40 @@ const BOXES = {
       "Mixer power supply",
       "Audio snake (4 XLR to TRS)",
       "Speaker cables (two long and two short)",
-      "Prop phone",
       "USB button for alarm cancel",
       "- USB extension cord",
     ]
   },
   3: {
-    name: "Box 3 · SimPrint Kit",
-    sub: "Tablet, cards and paper",
+    name: "Box 3 · Pacer, Printer and Router Kit",
     items: [
+      "Thermal printer paper, rolls (2)",
+      "Nighthawk router",
+      "- Power cord",
+      "Spare NFC reader",
       "Android tablet",
-      "NFC cards",
+      "NFC cards bag (printer)",
       "Patient card",
       "BG card",
-      "Two rolls of paper",
+      "iPad mini (pacer)",
+      "Pacer power supply (TalentCell YB1206000-USB)",
+      "- Charger",
+      "Lightning cable, pacer iPad",
+      "Medtronic 5388 (demonstration only)",
     ]
   },
   4: {
     name: "Box 4 · Power Kit",
-    sub: "Power supplies and cords",
+    sub: "The one power kit for OH, Quiz Code and ECCO days",
     items: [
-      "Extension cords (4)",
-      "- Speakers (2)",
-      "- Bleed rig (1)",
-      "- Print rack (1)",
-      "Power strip (MacBooks, Anvil Rack, Mixer, iPads)",
-      "Heavy-duty power cord for power strip (orange)",
-      "Gaffer tape",
-      "Medtronic 5388 (demonstration only)",
+      "Extension cords, assorted",
+      "USB power supplies (4)",
+      "USB-C cords, assorted",
+      "USB-Lightning cords, assorted",
     ]
   },
   5: {
-    name: "Box 5 · Quiz Code Power Kit",
-    sub: "Quiz Code days only, not OH",
-    items: [
-      "4 Anker USB power supplies and power cords",
-      "12 USB-C cords",
-      "4 extension cords",
-      "8 Lightning cords",
-    ]
-  },
-  6: {
-    name: "Box 6 · CardShark Kit",
+    name: "Box 5 · CardShark Kit",
     sub: "Quiz Code days only, not OH",
     items: [
       "Four CardShark modules",
@@ -299,16 +298,16 @@ const BOXES = {
       "Table stands",
     ]
   },
-  7: {
-    name: "Box 7 · Speaker Kit",
+  6: {
+    name: "Box 6 · Speaker Kit",
     sub: "Powered speakers",
     items: [
       "Pair of powered speakers",
       "Power cords",
     ]
   },
-  8: {
-    name: "Box 8 · Work Bag",
+  7: {
+    name: "Box 7 · Work Bag",
     sub: "Charge the night before",
     items: [
       "MacBook Pro M4 16\"",
@@ -318,18 +317,14 @@ const BOXES = {
       "- Charger and USB-C cable",
       "iPad Pro 12.9 (backup)",
       "- Charger and USB-C cable",
-      "iPad mini (Pacer)",
-      "- Charger and Lightning cable",
       "MacBook Pro M1 13\" (Sound Control) with charger",
       "Stream Deck",
       "- Cable",
       "- Stand",
-      "Anker PowerIQ 3 power bank (Pacer iPad)",
-      "- Charger and cable",
     ]
   },
-  9: {
-    name: "Box 9 · Paper Red Box",
+  8: {
+    name: "Box 8 · Paper Red Box",
     sub: "Blue top file box",
     items: [
       "Paperwork folder",
@@ -352,8 +347,8 @@ const BOXES = {
       "- Laminated Swan screen grabs",
     ]
   },
-  10: {
-    name: "Box 10 · Andy Case",
+  9: {
+    name: "Box 9 · Andy Case",
     sub: "Mannequin",
     items: [
       "Andy with legs, central line, ET tube and PA catheter",
@@ -367,8 +362,8 @@ const BOXES = {
       "Epicardial wire",
     ]
   },
-  11: {
-    name: "Box 11 · Black Paper Box",
+  10: {
+    name: "Box 10 · Black Paper Box",
     sub: "Quiz Code days only, not OH",
     items: [
       "Student booklets",
@@ -376,16 +371,16 @@ const BOXES = {
       "Instructor booklets",
     ]
   },
-  12: {
-    name: "Box 12 · Swan Setup Box",
+  11: {
+    name: "Box 11 · Swan Setup Box",
     items: [
       "Saline, 1 liter",
       "Arterial and Swan pressure tubing",
       "Transducer holder",
     ]
   },
-  13: {
-    name: "Box 13 · Simulated Drug Box",
+  12: {
+    name: "Box 12 · Simulated Drug Box",
     items: [
       "Dexmedetomidine, Shea tubing",
       "Nicardipine, Shea tubing",
@@ -396,6 +391,15 @@ const BOXES = {
       "Dobutamine, Shea tubing",
       "Saline 1 liter, continuous IV (simulated)",
       "Extra IV tubing for Four Peaks",
+    ]
+  },
+  13: {
+    name: "Box 13 · Chest Opening Box",
+    items: [
+      "Mayo scissors",
+      "Wire cutter",
+      "Cooley retractor",
+      "Scalpel handle, #10 (no blade)",
     ]
   },
 };
@@ -492,6 +496,45 @@ function packedIn(boxId) {
     BOXES[k].group !== "Load-out" && parse(k).some(it => it.ref === boxId));
 }
 
+// Inside one load-out, the container that directly holds a box, or null if
+// that load-out does not take the box at all.
+function holderIn(rootId, boxId, path) {
+  path = path || [];
+  if (!BOXES[rootId] || path.includes(rootId)) return null;
+  const refs = parse(rootId).filter(it => it.ref).map(it => it.ref);
+  if (refs.includes(boxId)) return rootId;
+  for (const r of refs) {
+    const h = holderIn(r, boxId, path.concat(rootId));
+    if (h) return h;
+  }
+  return null;
+}
+
+// Where a box travels, as shown under its name. A box can sit in a tote on
+// one load-out and travel loose on another (Box 3 is in Tote 2 on OH days
+// and loose on Quiz Code days), so each load-out that takes it is asked.
+// Same place on every load-out: "Packed in Tote 1", or nothing if loose.
+// Different places: one entry per load-out, e.g. "OH day: in Tote 2".
+function placement(boxId) {
+  const link = k => '<a href="?b=' + encodeURIComponent(k) + '">' + esc(BOXES[k].name) + '</a>';
+  const isLoadout = k => BOXES[k].group === "Load-out";
+  const per = Object.keys(BOXES).filter(isLoadout)
+    .map(L => ({ L: L, h: holderIn(L, boxId) }))
+    .filter(p => p.h);
+  if (!per.length) {
+    const parent = packedIn(boxId);
+    return parent ? "Packed in " + link(parent) : "";
+  }
+  const where = per.map(p => isLoadout(p.h) ? "loose" : p.h);
+  if (where.every(w => w === where[0])) {
+    return where[0] === "loose" ? "" : "Packed in " + link(where[0]);
+  }
+  return per.map((p, i) =>
+    esc(BOXES[p.L].name.replace(/ load-out$/, "")) + ": " +
+    (where[i] === "loose" ? "loose" : "in " + link(where[i]))
+  ).join(" · ");
+}
+
 function renderPicker() {
   app.innerHTML =
     '<header><h1 class="boxname">All boxes</h1>' +
@@ -513,12 +556,12 @@ function renderBox() {
   const items = parse(id);
   const on = readTicks(id);
   const isLoadout = box.group === "Load-out";
-  const parent = packedIn(id);
+  const place = placement(id);
   const c = count(id);
 
   const meta = [];
   if (box.sub) meta.push(esc(box.sub));
-  if (parent) meta.push('Packed in <a href="?b=' + encodeURIComponent(parent) + '">' + esc(BOXES[parent].name) + '</a>');
+  if (place) meta.push(place);
 
   app.innerHTML =
     '<nav class="back"><a href="' + esc(location.pathname) + '">‹ All boxes</a></nav>' +
